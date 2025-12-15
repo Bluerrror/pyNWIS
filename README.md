@@ -27,7 +27,7 @@ pip install nwis-data-downloader
 Or install from source:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/NWIS_Data_Downloader.git
+git clone https://github.com/bluerrror/NWIS_Data_Downloader.git
 cd NWIS_Data_Downloader
 pip install -e .
 ```
@@ -46,7 +46,7 @@ Some frequently used USGS parameter codes (from USGS documentation):
 | 00060          | Discharge          | Streamflow discharge              | ft³/s      |
 | 00065          | Gage Height        | Gage height                       | ft         |
 | 00045          | Precipitation      | Precipitation depth               | in         |
-| 00400          | pH                 | pH value                          | pH units   |
+| 00400          | pH                 | pH value                          | unitless   |
 | 00630          | Nitrate            | Nitrogen, nitrate                 | mg/L as N  |
 | 00631          | Nitrate + Nitrite  | Nitrate plus nitrite              | mg/L as N  |
 | 80155          | Suspended Sediment | Suspended sediment concentration  | mg/L       |
