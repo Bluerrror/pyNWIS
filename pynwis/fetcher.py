@@ -241,8 +241,10 @@ def fetch_batch_usgs_data(
                 all_data.append(batch_df)
                 valid_site_count += len(batch_df["site_no"].unique())
 
+    expected_cols = ["site_no", "time"] + parameter_codes
+
     if not all_data:
-        return pd.DataFrame()
+        return pd.DataFrame(columns=expected_cols)
 
     full_dataset = pd.concat(all_data, ignore_index=True)
     full_dataset = full_dataset.dropna(how='all')  # Drop fully empty rows

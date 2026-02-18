@@ -37,7 +37,7 @@ from .parameters import (
     search_parameters
 )
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 __all__ = [
     'fetch_usgs_daily',
     'usgs_json_to_df',

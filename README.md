@@ -89,7 +89,7 @@ print(results[["parm_cd", "parameter_nm"]])
 # 2   80225  Bedload sediment discharge, short tons per day
 ```
 
-### 3. Batch download with filtering
+### 3. Batch download for multiple sites
 
 ```python
 from pynwis import fetch_batch_usgs_data
@@ -98,15 +98,16 @@ sites = ["01491000", "01646500", "09522500"]
 
 df = fetch_batch_usgs_data(
     sites=sites,
-    parameter_codes=["00060", "80154"],   # Discharge + Suspended sediment
-    start="2000-01-01",
-    required_params=["80154"],            # Only keep sites that have sediment data
-    min_records=100,
+    parameter_codes=["00060"],            # Discharge
+    start="2020-01-01",
 )
 
 print(df.shape)
-print(df.describe())
+print(df.head())
 ```
+
+> **Tip:** Use `required_params=["80154"]` and `min_records=100` to keep only sites
+> that have at least 100 suspended-sediment records.
 
 ---
 
