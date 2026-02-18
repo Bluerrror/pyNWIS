@@ -38,8 +38,8 @@ pip install pynwis
 Or install from source:
 
 ```bash
-git clone https://github.com/Bluerrror/NWIS-Data-Downloader.git
-cd NWIS-Data-Downloader
+git clone https://github.com/Bluerrror/pyNWIS.git
+cd pyNWIS
 pip install -e .
 ```
 

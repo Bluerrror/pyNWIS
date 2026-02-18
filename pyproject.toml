@@ -13,18 +13,26 @@ authors = [
     { name = "Shahab Shojaee" }
 ]
 
-keywords = ["hydrology", "USGS", "NWIS", "water", "data", "streamflow", "sediment"]
+keywords = [
+    "hydrology", "USGS", "NWIS", "water-data", "streamflow", "sediment",
+    "water-quality", "discharge", "pandas", "geoscience", "environmental-data",
+    "usgs-nwis", "water-resources", "daily-values", "batch-download",
+]
 
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Hydrology",
+    "Topic :: Scientific/Engineering :: GIS",
 ]
 
 dependencies = [
@@ -40,9 +48,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Bluerrror/NWIS-Data-Downloader"
-Repository = "https://github.com/Bluerrror/NWIS-Data-Downloader"
-Issues = "https://github.com/Bluerrror/NWIS-Data-Downloader/issues"
+Homepage = "https://github.com/Bluerrror/pyNWIS"
+Repository = "https://github.com/Bluerrror/pyNWIS"
+Issues = "https://github.com/Bluerrror/pyNWIS/issues"
+Changelog = "https://github.com/Bluerrror/pyNWIS/blob/master/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 include = ["pynwis*"]
