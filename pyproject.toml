@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nwis-data-downloader"
+name = "pynwis"
 version = "0.1.0"
 description = "A lightweight Python toolkit for downloading, processing, and filtering USGS NWIS daily water data"
 readme = "README.md"
@@ -46,4 +46,4 @@ Repository = "https://github.com/Bluerrror/NWIS-Data-Downloader"
 Issues = "https://github.com/Bluerrror/NWIS-Data-Downloader/issues"
 
 [tool.setuptools.packages.find]
-include = ["usgs_data_fetcher*"]
+include = ["pynwis*"]

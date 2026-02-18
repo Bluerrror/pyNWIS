@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 from unittest.mock import patch, MagicMock
-from usgs_data_fetcher.parameters import get_usgs_parameters, search_parameters
+from pynwis.parameters import get_usgs_parameters, search_parameters
 
 
 # Sample RDB-style response from USGS (matching real USGS format)
@@ -23,7 +23,7 @@ parm_cd\tgroup_cd\tparameter_nm\tparameter_units\tcasrn\tsrsname\tparameter_fld\
 class TestGetUsgsParameters:
     """Tests for get_usgs_parameters."""
 
-    @patch("usgs_data_fetcher.parameters.requests.get")
+    @patch("pynwis.parameters.requests.get")
     def test_returns_dataframe(self, mock_get):
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -37,7 +37,7 @@ class TestGetUsgsParameters:
         assert "parm_cd" in df.columns
         assert "parameter_nm" in df.columns
 
-    @patch("usgs_data_fetcher.parameters.requests.get")
+    @patch("pynwis.parameters.requests.get")
     def test_returns_empty_on_failure(self, mock_get):
         mock_get.side_effect = Exception("Connection error")
         df = get_usgs_parameters()

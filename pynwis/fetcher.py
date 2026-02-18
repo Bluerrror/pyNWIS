@@ -1,4 +1,4 @@
-# usgs_data_fetcher/fetcher.py
+# pynwis/fetcher.py
 """
 USGS Data Fetcher - Core Functions
 ==================================

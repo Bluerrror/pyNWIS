@@ -1,4 +1,4 @@
-# usgs_data_fetcher/parameters.py
+# pynwis/parameters.py
 """
 USGS Parameter Codes Utilities
 ==============================

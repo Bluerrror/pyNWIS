@@ -7,7 +7,7 @@ Demonstrates fetching parameter info, selecting codes, and batch downloading dat
 """
 
 import pandas as pd
-from usgs_data_fetcher import (
+from pynwis import (
     get_usgs_parameters,
     search_parameters,
     fetch_batch_usgs_data

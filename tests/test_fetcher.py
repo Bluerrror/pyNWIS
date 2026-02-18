@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 from unittest.mock import patch, MagicMock
-from usgs_data_fetcher.fetcher import fetch_usgs_daily, usgs_json_to_df, fetch_batch_usgs_data
+from pynwis.fetcher import fetch_usgs_daily, usgs_json_to_df, fetch_batch_usgs_data
 
 
 # --- Sample USGS JSON response for testing ---
@@ -74,7 +74,7 @@ class TestUsgsJsonToDf:
 class TestFetchUsgsDaily:
     """Tests for fetch_usgs_daily."""
 
-    @patch("usgs_data_fetcher.fetcher.requests.get")
+    @patch("pynwis.fetcher.requests.get")
     def test_successful_fetch(self, mock_get):
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -91,7 +91,7 @@ class TestFetchUsgsDaily:
         assert result == SAMPLE_JSON
         mock_get.assert_called_once()
 
-    @patch("usgs_data_fetcher.fetcher.requests.get")
+    @patch("pynwis.fetcher.requests.get")
     def test_returns_none_on_failure(self, mock_get):
         mock_get.side_effect = Exception("Network error")
 
@@ -103,7 +103,7 @@ class TestFetchUsgsDaily:
         )
         assert result is None
 
-    @patch("usgs_data_fetcher.fetcher.requests.get")
+    @patch("pynwis.fetcher.requests.get")
     def test_default_end_date_is_today(self, mock_get):
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -121,7 +121,7 @@ class TestFetchUsgsDaily:
 class TestFetchBatchUsgsData:
     """Tests for fetch_batch_usgs_data."""
 
-    @patch("usgs_data_fetcher.fetcher.fetch_usgs_daily")
+    @patch("pynwis.fetcher.fetch_usgs_daily")
     def test_batch_returns_dataframe(self, mock_fetch):
         mock_fetch.return_value = SAMPLE_JSON
 
@@ -134,7 +134,7 @@ class TestFetchBatchUsgsData:
         assert isinstance(df, pd.DataFrame)
         assert not df.empty
 
-    @patch("usgs_data_fetcher.fetcher.fetch_usgs_daily")
+    @patch("pynwis.fetcher.fetch_usgs_daily")
     def test_batch_empty_when_no_data(self, mock_fetch):
         mock_fetch.return_value = None
 
@@ -146,7 +146,7 @@ class TestFetchBatchUsgsData:
         )
         assert df.empty
 
-    @patch("usgs_data_fetcher.fetcher.fetch_usgs_daily")
+    @patch("pynwis.fetcher.fetch_usgs_daily")
     def test_required_params_filtering(self, mock_fetch):
         mock_fetch.return_value = SAMPLE_JSON
 

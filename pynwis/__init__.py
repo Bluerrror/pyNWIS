@@ -1,7 +1,7 @@
-# usgs_data_fetcher/__init__.py
+# pynwis/__init__.py
 """
-USGS Data Fetcher Package
-=========================
+pyNWIS
+======
 
 A Python package to fetch and process daily USGS NWIS data for multiple sites and parameters.
 Includes utilities to discover and select parameter codes dynamically.
@@ -13,10 +13,10 @@ Key Features:
 - Dynamic retrieval of USGS parameter codes for easy selection.
 
 Installation:
-pip install requests pandas tqdm
+pip install pynwis
 
 Usage:
-from usgs_data_fetcher import fetch_batch_usgs_data, get_usgs_parameters, search_parameters
+from pynwis import fetch_batch_usgs_data, get_usgs_parameters, search_parameters
 
 # Get parameter info
 params_df = get_usgs_parameters()

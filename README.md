@@ -1,8 +1,8 @@
-# NWIS Data Downloader
+# pyNWIS
 
-[![PyPI version](https://badge.fury.io/py/nwis-data-downloader.svg)](https://badge.fury.io/py/nwis-data-downloader)
+[![PyPI version](https://badge.fury.io/py/pynwis.svg)](https://badge.fury.io/py/pynwis)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python Versions](https://img.shields.io/pypi/pyversions/nwis-data-downloader.svg)](https://pypi.org/project/nwis-data-downloader/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pynwis.svg)](https://pypi.org/project/pynwis/)
 
 A Python package to fetch and process daily USGS National Water Information System (NWIS) data. Supports batch downloading across many sites and parameters, dynamic parameter code discovery, and filtering for data quality.
 
@@ -21,7 +21,7 @@ A Python package to fetch and process daily USGS National Water Information Syst
 ## Installation
 
 ```bash
-pip install nwis-data-downloader
+pip install pynwis
 ```
 
 Or install from source:
@@ -64,7 +64,7 @@ get_usgs_parameters()
 ### 1. Discover and Search Parameters
 
 ```python
-from usgs_data_fetcher import get_usgs_parameters, search_parameters
+from pynwis import get_usgs_parameters, search_parameters
 
 params_df = get_usgs_parameters()
 print(f"Total parameters: {len(params_df)}")
@@ -83,7 +83,7 @@ print(f"Water Quality Matches: {len(wq_params)}")
 ### 2. Fetch Data for a Single Site
 
 ```python
-from usgs_data_fetcher import fetch_usgs_daily, usgs_json_to_df
+from pynwis import fetch_usgs_daily, usgs_json_to_df
 
 site = '01491000'
 json_data = fetch_usgs_daily(
@@ -103,7 +103,7 @@ print(df.shape)
 ### 3. Batch Fetch with Filtering
 
 ```python
-from usgs_data_fetcher import fetch_batch_usgs_data
+from pynwis import fetch_batch_usgs_data
 
 sites = [
     '01491000',
@@ -133,7 +133,7 @@ print(data_df.describe())
 
 ```python
 import pandas as pd
-from usgs_data_fetcher import get_usgs_parameters, search_parameters
+from pynwis import get_usgs_parameters, search_parameters
 
 params_df = get_usgs_parameters()
 query = input("Enter search term (e.g., 'sediment'): ").strip()
@@ -189,7 +189,7 @@ plt.show()
 - `get_usgs_parameters()` — Download complete parameter catalog.
 - `search_parameters(params_df, query, ...)` — Query parameters by keyword.
 
-Full documentation can be found in `fetcher.py` and `parameters.py`.
+Full documentation can be found in `pynwis/fetcher.py` and `pynwis/parameters.py`.
 
 ---
 
