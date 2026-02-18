@@ -3,92 +3,79 @@
 USGS Parameter Codes Utilities
 ==============================
 
-Functions to fetch and search USGS parameter codes dynamically.
+Built-in catalog of common USGS NWIS parameter codes and search utilities.
 """
 
-import requests
 import pandas as pd
-from typing import List, Optional, Union
+from typing import List
+
+
+# Comprehensive built-in catalog of commonly used USGS parameter codes
+_PARAMETER_CATALOG = [
+    ("00010", "Physical", "Temperature, water, degrees Celsius", "deg C"),
+    ("00020", "Physical", "Temperature, air, degrees Celsius", "deg C"),
+    ("00045", "Physical", "Precipitation, total, inches", "in"),
+    ("00060", "Physical", "Discharge, cubic feet per second", "ft3/s"),
+    ("00065", "Physical", "Gage height, feet", "ft"),
+    ("00095", "Physical", "Specific conductance, water, unfiltered, uS/cm at 25C", "uS/cm"),
+    ("00300", "Physical", "Dissolved oxygen, water, unfiltered, mg/L", "mg/L"),
+    ("00400", "Physical", "pH, water, unfiltered, field, standard units", "std units"),
+    ("00410", "Physical", "Acid neutralizing capacity, water, unfiltered, mg/L as CaCO3", "mg/L"),
+    ("00480", "Sediment", "Salinity, water, unfiltered, parts per thousand", "ppt"),
+    ("00530", "Sediment", "Suspended solids, water, unfiltered, mg/L", "mg/L"),
+    ("00600", "Nutrient", "Total nitrogen, water, unfiltered, mg/L", "mg/L"),
+    ("00605", "Nutrient", "Organic nitrogen, water, unfiltered, mg/L", "mg/L"),
+    ("00608", "Nutrient", "Ammonia, water, filtered, mg/L as N", "mg/L"),
+    ("00613", "Nutrient", "Nitrite, water, filtered, mg/L as N", "mg/L"),
+    ("00618", "Nutrient", "Nitrate, water, filtered, mg/L as N", "mg/L"),
+    ("00625", "Nutrient", "Ammonia plus organic nitrogen, water, unfiltered, mg/L as N", "mg/L"),
+    ("00630", "Nutrient", "Nitrate plus nitrite, water, unfiltered, mg/L as N", "mg/L"),
+    ("00631", "Nutrient", "Nitrate plus nitrite, water, filtered, mg/L as N", "mg/L"),
+    ("00665", "Nutrient", "Phosphorus, water, unfiltered, mg/L as P", "mg/L"),
+    ("00680", "Nutrient", "Organic carbon, water, unfiltered, mg/L", "mg/L"),
+    ("00681", "Nutrient", "Organic carbon, water, filtered, mg/L", "mg/L"),
+    ("70331", "Physical", "Suspended sediment, sieve diameter, percent finer than 0.0625 mm", "%"),
+    ("72019", "Physical", "Depth to water level, feet below land surface", "ft"),
+    ("72020", "Physical", "Elevation above NGVD 1929, feet", "ft"),
+    ("80154", "Sediment", "Suspended sediment concentration, mg/L", "mg/L"),
+    ("80155", "Sediment", "Suspended sediment discharge, short tons per day", "tons/day"),
+    ("80225", "Sediment", "Bedload sediment discharge, short tons per day", "tons/day"),
+    ("99133", "Nutrient", "Nitrate plus nitrite, water, in situ, mg/L as N", "mg/L"),
+    ("63680", "Physical", "Turbidity, water, unfiltered, FNU", "FNU"),
+]
 
 
 def get_usgs_parameters() -> pd.DataFrame:
     """
-    Fetch the complete list of USGS parameter codes from the official API.
+    Return the built-in catalog of common USGS NWIS parameter codes.
 
     Returns
     -------
     pd.DataFrame
-        DataFrame with columns: 'parm_cd' (str), 'group_cd' (str), 'parameter_nm' (str),
-        and additional fields like units, CASRN, etc., if available in the RDB response.
+        DataFrame with columns: ``parm_cd``, ``group``, ``parameter_nm``,
+        ``parameter_unit``.
 
-    Notes
-    -----
-    Parses the tab-separated RDB format from USGS.
-    Updates dynamically; no hardcoded list.
+    Examples
+    --------
+    >>> from pynwis import get_usgs_parameters
+    >>> params = get_usgs_parameters()
+    >>> params.head(3)
+      parm_cd     group                              parameter_nm parameter_unit
+    0   00010  Physical  Temperature, water, degrees Celsius          deg C
     """
-    # Note: % encoded as %25 for URL
-    url = "https://help.waterdata.usgs.gov/code/parameter_cd_query?fmt=rdb&group_cd=%25"
-
-    try:
-        r = requests.get(url, timeout=30)
-        r.raise_for_status()
-        lines = r.text.splitlines()
-    except Exception as e:
-        print(f"Failed to fetch parameter codes: {e}")
-        return pd.DataFrame()
-
-    # RDB format: Headers start with #, data follows
-    headers = []
-    data = []
-    in_headers = True
-
-    for line in lines:
-        line = line.strip()
-        if not line or line.startswith('#'):
-            if in_headers and line.startswith('#'):
-                # Parse header for column names
-                if 'tsv' in line.lower() or 'field' in line.lower():
-                    parts = line.split('\t')
-                    headers = [p.strip('# ').strip() for p in parts if p.strip()]
-            continue
-        else:
-            in_headers = False
-            parts = [p.strip() for p in line.split('\t')]
-            if len(parts) >= 3:
-                data.append(parts)
-
-    if not data or not headers:
-        print("No data parsed from USGS response.")
-        return pd.DataFrame()
-
-    # Map to known columns (adjust indices based on typical RDB)
-    # Typical: parm_cd (0), group_cd (1), parameter_nm (2), etc.
-    df_data = []
-    for row in data:
-        row_dict = {
-            'parm_cd': row[0] if len(row) > 0 else '',
-            'group_cd': row[1] if len(row) > 1 else '',
-            'parameter_nm': row[2] if len(row) > 2 else '',
-        }
-        # Add more if headers allow, e.g., 'parameter_unit' at index 12 or so
-        if len(headers) > 12 and 'parameter_unit' in headers:
-            unit_idx = headers.index('parameter_unit')
-            row_dict['parameter_unit'] = row[unit_idx] if len(row) > unit_idx else ''
-        df_data.append(row_dict)
-
-    df = pd.DataFrame(df_data)
-    df = df[df['parm_cd'].str.isdigit()]  # Filter valid 5-digit codes
-    df = df.sort_values('parm_cd').reset_index(drop=True)
-
-    print(f"Fetched {len(df)} parameter codes.")
+    df = pd.DataFrame(
+        _PARAMETER_CATALOG,
+        columns=["parm_cd", "group", "parameter_nm", "parameter_unit"],
+    )
+    df = df.sort_values("parm_cd").reset_index(drop=True)
     return df
 
 
 def search_parameters(
     params_df: pd.DataFrame,
     query: str,
-    columns: List[str] = ['parameter_nm'],
-    case_sensitive: bool = False
+    columns: List[str] = ["parameter_nm"],
+    case_sensitive: bool = False,
 ) -> pd.DataFrame:
     """
     Search for USGS parameters by keyword.
@@ -96,18 +83,26 @@ def search_parameters(
     Parameters
     ----------
     params_df : pd.DataFrame
-        DataFrame from get_usgs_parameters().
+        DataFrame from :func:`get_usgs_parameters`.
     query : str
-        Search term (e.g., 'discharge', 'sediment').
-    columns : List[str], optional
-        Columns to search in. Default: ['parameter_nm'].
+        Search term (e.g., ``'discharge'``, ``'sediment'``).
+    columns : list of str, optional
+        Columns to search in. Default: ``['parameter_nm']``.
     case_sensitive : bool, optional
-        Whether to perform case-sensitive search. Default: False.
+        Whether to perform case-sensitive search. Default: ``False``.
 
     Returns
     -------
     pd.DataFrame
         Filtered DataFrame of matching parameters.
+
+    Examples
+    --------
+    >>> from pynwis import get_usgs_parameters, search_parameters
+    >>> params = get_usgs_parameters()
+    >>> search_parameters(params, 'discharge')
+      parm_cd     group                              parameter_nm parameter_unit
+    ...
     """
     if params_df.empty:
         return params_df
@@ -116,8 +111,8 @@ def search_parameters(
 
     for col in columns:
         if col in params_df.columns:
-            mask |= params_df[col].astype(str).str.contains(query, regex=False, case=case_sensitive, na=False)
+            mask |= params_df[col].astype(str).str.contains(
+                query, regex=False, case=case_sensitive, na=False
+            )
 
-    result = params_df[mask].copy()
-    print(f"Found {len(result)} parameters matching '{query}'.")
-    return result
+    return params_df[mask].copy().reset_index(drop=True)

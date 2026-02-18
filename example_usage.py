@@ -1,49 +1,50 @@
 # example_usage.py
 """
-Example Usage of USGS Data Fetcher Package
-==========================================
+Example Usage of pyNWIS
+=======================
 
-Demonstrates fetching parameter info, selecting codes, and batch downloading data.
+Demonstrates searching parameters, fetching data, and batch downloading.
 """
 
-import pandas as pd
 from pynwis import (
     get_usgs_parameters,
     search_parameters,
-    fetch_batch_usgs_data
+    fetch_usgs_daily,
+    usgs_json_to_df,
+    fetch_batch_usgs_data,
 )
 
-# Step 1: Fetch all parameter codes
-print("Fetching USGS parameter codes...")
-params_df = get_usgs_parameters()
+# Step 1: Browse and search the parameter catalog
+params = get_usgs_parameters()
+print(f"Available parameters: {len(params)}")
+print(params[["parm_cd", "parameter_nm", "parameter_unit"]].head(10))
 
-# Step 2: Search and select parameters (example: discharge and suspended sediment)
-discharge_params = search_parameters(params_df, 'discharge')
-print("\nDischarge parameters:")
-print(discharge_params[['parm_cd', 'parameter_nm', 'parameter_unit']])
+# Search for sediment-related parameters
+sediment = search_parameters(params, "sediment")
+print("\nSediment parameters:")
+print(sediment[["parm_cd", "parameter_nm", "parameter_unit"]])
 
-sediment_params = search_parameters(params_df, 'suspended sediment')
-print("\nSuspended sediment parameters:")
-print(sediment_params[['parm_cd', 'parameter_nm', 'parameter_unit']])
+# Step 2: Fetch discharge data for a single site
+print("\nFetching discharge for site 01491000...")
+json_data = fetch_usgs_daily(
+    sites=["01491000"],
+    parameter_codes=["00060"],
+    start="2024-01-01",
+    end="2024-06-01",
+)
+df = usgs_json_to_df(json_data)
+print(df.head())
+print(f"Shape: {df.shape}")
 
-# Select specific codes (user would choose here)
-selected_codes = ['00060', '80155']  # Discharge (cfs), Suspended sediment load (mg/l)
-
-# Step 3: Define sites (example: replace with your list or from df['Gage_no'])
-sites = ['01491000', '01646500']  # Example USGS sites (Delaware River, Susquehanna River)
-
-# Step 4: Batch fetch data, keeping only sites with sediment data
-print("\nFetching data...")
-data_df = fetch_batch_usgs_data(
+# Step 3: Batch fetch for multiple sites with filtering
+sites = ["01491000", "01646500"]
+print(f"\nBatch fetching for {len(sites)} sites...")
+data = fetch_batch_usgs_data(
     sites=sites,
-    parameter_codes=selected_codes,
-    required_params=['80155'],  # Keep sites with >0 sediment records
-    min_records=1
+    parameter_codes=["00060", "80154"],
+    start="2020-01-01",
+    required_params=["80154"],
+    min_records=1,
 )
-
-print("\nFinal dataset:")
-print(data_df.head())
-print(f"Shape: {data_df.shape}")
-
-# Save if needed
-# data_df.to_csv('usgs_data.csv', index=False)
+print(f"Result shape: {data.shape}")
+print(data.head())
