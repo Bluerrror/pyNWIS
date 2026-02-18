@@ -9,6 +9,7 @@ Functions to fetch and process USGS daily values data.
 import requests
 import pandas as pd
 import time
+from datetime import date
 from typing import List, Optional, Dict, Any
 from tqdm import tqdm
 
@@ -17,7 +18,7 @@ def fetch_usgs_daily(
     sites: List[str],
     parameter_codes: List[str],
     start: str = "1900-01-01",
-    end: str = "2025-01-01",
+    end: Optional[str] = None,
     max_retries: int = 5,
     pause: int = 1
 ) -> Optional[Dict[str, Any]]:
@@ -33,7 +34,7 @@ def fetch_usgs_daily(
     start : str, optional
         Start date in YYYY-MM-DD format. Default: "1900-01-01".
     end : str, optional
-        End date in YYYY-MM-DD format. Default: "2025-01-01".
+        End date in YYYY-MM-DD format. Default: today's date.
     max_retries : int, optional
         Maximum number of retry attempts on failure. Default: 5.
     pause : int, optional
@@ -48,6 +49,9 @@ def fetch_usgs_daily(
     -----
     Handles rate limiting (HTTP 429) with exponential backoff.
     """
+    if end is None:
+        end = date.today().isoformat()
+
     site_str = ",".join(sites)
     param_str = ",".join(parameter_codes)
 
@@ -132,7 +136,7 @@ def fetch_batch_usgs_data(
     sites: List[str],
     parameter_codes: List[str],
     start: str = "1900-01-01",
-    end: str = "2025-01-01",
+    end: Optional[str] = None,
     required_params: Optional[List[str]] = None,
     min_records: int = 1,
     batch_size: int = 50,
@@ -150,7 +154,7 @@ def fetch_batch_usgs_data(
     start : str, optional
         Start date. Default: "1900-01-01".
     end : str, optional
-        End date. Default: "2025-01-01".
+        End date. Default: today's date.
     required_params : Optional[List[str]], optional
         Subset of parameter_codes; only keep sites with at least min_records non-NA values
         for ANY of these params. If None, keep all sites with any data. Default: None.
@@ -174,6 +178,9 @@ def fetch_batch_usgs_data(
     """
     if required_params is None:
         required_params = []
+
+    if end is None:
+        end = date.today().isoformat()
 
     all_data = []
     success_count = 0

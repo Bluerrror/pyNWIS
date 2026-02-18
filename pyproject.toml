@@ -2,36 +2,48 @@
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-
 [project]
 name = "nwis-data-downloader"
 version = "0.1.0"
-description = "A Python package for downloading USGS NWIS hydrological data"
+description = "A lightweight Python toolkit for downloading, processing, and filtering USGS NWIS daily water data"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 authors = [
-{ name = "Shahab Shojaee" }
+    { name = "Shahab Shojaee" }
 ]
 
-
-keywords = ["hydrology", "USGS", "NWIS", "water", "data"]
-
+keywords = ["hydrology", "USGS", "NWIS", "water", "data", "streamflow", "sediment"]
 
 classifiers = [
-"Programming Language :: Python :: 3",
-"License :: OSI Approved :: MIT License",
-"Operating System :: OS Independent"
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Hydrology",
 ]
-
 
 dependencies = [
-"requests",
-"pandas"
+    "requests>=2.25.0",
+    "pandas>=1.3.0",
+    "tqdm>=4.62.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+]
 
 [project.urls]
 Homepage = "https://github.com/Bluerrror/NWIS-Data-Downloader"
 Repository = "https://github.com/Bluerrror/NWIS-Data-Downloader"
 Issues = "https://github.com/Bluerrror/NWIS-Data-Downloader/issues"
+
+[tool.setuptools.packages.find]
+include = ["usgs_data_fetcher*"]

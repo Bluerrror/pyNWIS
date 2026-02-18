@@ -27,8 +27,8 @@ pip install nwis-data-downloader
 Or install from source:
 
 ```bash
-git clone https://github.com/bluerrror/NWIS_Data_Downloader.git
-cd NWIS_Data_Downloader
+git clone https://github.com/Bluerrror/NWIS-Data-Downloader.git
+cd NWIS-Data-Downloader
 pip install -e .
 ```
 
